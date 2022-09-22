@@ -1,17 +1,16 @@
+.timer{
+    text-align: center;
+}
+
+.main{
+    text-align: center;
+}
+
 .homepage-head {
     text-align: center;
-    color: rgb(111, 0, 255);   
+    width: 1050px;
+    border: 15px solid green;
+    padding: 50px;
+    margin: 20px;
 }
 
-.start-quiz {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 200px;
-    border: 3px solid green;
-    width: 100%;
-  }
-
-.container {
-    display: none;
-}

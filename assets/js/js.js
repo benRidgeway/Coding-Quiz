@@ -177,3 +177,147 @@ var createQuestionCard = function(cardObject) {
 
     correctAnswer.setAttribute("data-answer","correct");
 };
+
+var removeCard = function() {
+    currentCardHolder.removeChild(cardEl);
+};
+
+var stopQuiz = function () {
+    stopTimer();
+    score=score+timerCount;
+    removeCard();
+    createCard(cardObjects.quizEndCard);
+};
+
+var resetQuiz = function () {
+    score = 0;
+    timerCount = 100;
+    timerCountEl.textContent = 100;
+    questionNumber = 1;
+    answerFeedback = "";
+};
+
+var stopTimer = function () {
+    clearInterval(intervalId);
+};
+
+var countDown = function () {
+    //decrease only if timer is greater than zero
+    if (timerCount > 0) {
+        timerCount -= 1;
+        timerCountEl.textContent = timerCount;
+    }
+    //otherwise set timer to 0 and end the quiz
+    else {
+        timerCount = 0;
+        timerCountEl.textContent = 0;
+        stopQuiz();
+    }
+};
+
+var startTimer = function() {
+    intervalId = setInterval(countDown, 1000);
+};
+
+var displayHighscores = function() {
+    var highScoreTableEl = document.createElement("ul");
+    highScoreTableEl.setAttribute("id", "high-score-table");
+    el2.appendChild(highScoreTableEl)
+
+    highScores.sort(function (a,b){
+        return b.score - a.score;
+    });
+
+    for (var i = 0; i < highScores.length; i++){
+        var scoreListEl = document.createElement("li");
+        scoreListEl.innerHTML = "<div class='score-initials'>"+highScores[i].initials+"</div><div class='score'>"+highScores[i].score+"</div>"
+        highScoreTableEl.appendChild(scoreListEl);
+    }
+};
+
+var cardClickHandler = function(event){
+    
+    targetId = event.target.getAttribute("id");
+
+   
+    if (targetId === "quiz-start-btn") {
+        removeCard();
+        createQuestionCard(cardObjects.quizCards.question1);
+        startTimer();
+        return;
+    }
+    
+    else if (targetId === "answer-0" || targetId === "answer-1" || targetId === "answer-2" || targetId === "answer-3") {
+        
+        if (questionNumber<totalQuestions) {
+            questionNumber++;
+        }
+        
+        else if (questionNumber === totalQuestions){
+            stopQuiz();
+            return;
+        }
+        //if the answer is correct, add 10pts to the score and set answerFeedback to correct, so it will display on the next card
+        if (event.target.getAttribute("data-answer")==="correct"){
+            score+=100;
+            answerFeedback = "Correct!";
+        }
+        //if answer is incorrect, set answerFeedback to Incorrect and subtract 10 seconds from timer
+        else {
+            answerFeedback = "Incorrect.";
+            if(timerCount>10){
+            timerCount -= 10;
+            }
+            else{
+            timerCount = 0;
+            }
+        }
+        
+        removeCard();
+        
+        createQuestionCard(cardObjects.quizCards["question"+questionNumber]);
+        return;
+    }
+    
+    else if (targetId === "restart-btn") {
+        resetQuiz();
+        removeCard();
+        createCard(cardObjects.quizStartCard);
+        return;
+    }
+ 
+    else if (targetId === "high-score-btn") {
+        stopTimer();
+        resetQuiz();
+        removeCard();
+        createCard(cardObjects.highScoreCard);
+        displayHighScores();
+    }
+};
+
+var submitHandler = function(event) {
+    event.preventDefault();
+
+    var initialsInput = document.getElementById("initials").value;
+
+    var highScoreObj = {
+        initials: initialsInput,
+        score: score
+    };
+
+    highScores.push(highScoreObj);
+    localStorage.setItem("scores", JSON.stringify(highScores));
+
+    resetQuiz();
+    removeCard();
+    createCard(cardObjects.highScoreCard);
+    displayHighScores();
+};
+
+createCard(cardObjects.quizStartCard);
+
+currentCardHolder.addEventListener("click", cardClickHandler);
+
+highScoreButtonEl.addEventListener("click", cardClickHandler);
+
+currentCardHolder.addEventListener("submit", submitHandler);
