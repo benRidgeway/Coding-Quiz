@@ -49,8 +49,9 @@ function startQuiz () {
     
     currentQuestion++;
     answerBtns.classList.remove('hide');
-    cardQuestions.classList.add('hide');
+    questions.classList.add('hide');
     setQuestions();
+    countDown();
 
 }
 
@@ -88,10 +89,10 @@ function stopQuiz() {
     clearInterval(timeRemain);
 }
 
-btnA.addEventListener('click', function () {checkAns(btnA.textContent)});
-btnB.addEventListener('click', function () {checkAns(btnB.textContent)});
-btnC.addEventListener('click', function () {checkAns(btnC.textContent)});
-btnD.addEventListener('click', function () {checkAns(btnD.textContent)});
+// btnA.addEventListener('click', function () {checkAns(btnA.textContent)});
+// btnB.addEventListener('click', function () {checkAns(btnB.textContent)});
+// btnC.addEventListener('click', function () {checkAns(btnC.textContent)});
+// btnD.addEventListener('click', function () {checkAns(btnD.textContent)});
 
 // function question1 () {
 //     cardText.innerHTML = 'Question 1';
@@ -102,9 +103,7 @@ btnD.addEventListener('click', function () {checkAns(btnD.textContent)});
 //     var ans3 = document.createElement("li");
 //     ans1.innerHTML = "['John', 'Alex', 'Cody', 'Blake']";
 //     questions.append(ans1);
-
-
 // }
 
-document.getElementById("start-button").addEventListener('click', function() {countDown(); startQuiz();});
+document.getElementById("start-button").addEventListener('click', console.log("clicked!"));
 
